@@ -5,29 +5,59 @@ using DataStructures.Common;
 namespace DataStructures.Graphs
 {
     /// <summary>
-    /// The weighted edge class.
+    /// The graph weighted edge class.
     /// </summary>
-    public class WeightedEdge<T> : IComparable<WeightedEdge<T>> where T : IComparable<T>
+    public class WeightedEdge<TVertex> : IEdge<TVertex> where TVertex : IComparable<TVertex>
     {
-        public T Source { get; set; }
-        public T Destination { get; set; }
+        /// <summary>
+        /// Gets or sets the source.
+        /// </summary>
+        /// <value>The source.</value>
+        public TVertex Source { get; set; }
+
+        /// <summary>
+        /// Gets or sets the destination.
+        /// </summary>
+        /// <value>The destination.</value>
+        public TVertex Destination { get; set; }
+
+        /// <summary>
+        /// Gets or sets the weight of edge.
+        /// </summary>
+        /// <value>The weight.</value>
         public Int64 Weight { get; set; }
 
-        public WeightedEdge(T src, T dst, Int64 weight)
+        /// <summary>
+        /// Gets a value indicating whether this edge is weighted.
+        /// </summary>
+        public bool IsWeighted
+        {
+            get { return true; }
+        }
+
+        /// <summary>
+        /// CONSTRUCTOR
+        /// </summary>
+        public WeightedEdge(TVertex src, TVertex dst, Int64 weight)
         {
             Source = src;
             Destination = dst;
             Weight = weight;
         }
 
-        public int CompareTo(WeightedEdge<T> other)
+
+        #region IComparable implementation
+        public int CompareTo(IEdge<TVertex> other)
         {
-            bool areNodesEqual = Source.IsEqualTo<T>(other.Source) && Destination.IsEqualTo<T>(other.Destination);
+            if (other == null)
+                return -1;
+            
+            bool areNodesEqual = Source.IsEqualTo<TVertex>(other.Source) && Destination.IsEqualTo<TVertex>(other.Destination);
 
             if (!areNodesEqual)
                 return -1;
-            else
-                return Weight.CompareTo(other.Weight);
+            return Weight.CompareTo(other.Weight);
         }
+        #endregion
     }
 }

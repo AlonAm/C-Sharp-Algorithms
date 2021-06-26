@@ -1,8 +1,13 @@
-﻿using System;
+﻿/***
+ * Prime-Hashing Functions Family.
+ * 
+ * Implements a simple family of hash functions using primes. 
+ * The functions are initialized by randomly selecting primes. 
+ * Supports re-generation of functions.
+ */
 
+using System;
 using DataStructures.Common;
-using DataStructures.Lists;
-using DataStructures.Hashing;
 
 namespace DataStructures.Hashing
 {

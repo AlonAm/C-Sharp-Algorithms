@@ -1,11 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
+﻿/***
+ * Detects if a given graph is cyclic. Supports directed and undirected graphs.
+ */
 
+using System;
+using System.Collections.Generic;
 using Algorithms.Common;
 using DataStructures.Graphs;
-using DataStructures.Lists;
-
 
 namespace Algorithms.Graphs
 {
@@ -25,7 +25,7 @@ namespace Algorithms.Graphs
         /// <returns>True if there is a cycle; otherwise, false.</returns>
         private static bool _isUndirectedCyclic<T>(IGraph<T> graph, T source, object parent, ref HashSet<T> visited) where T : IComparable<T>
         {
-            if(!visited.Contains(source))
+            if (!visited.Contains(source))
             {
                 // Mark the current node as visited
                 visited.Add(source);
@@ -38,11 +38,11 @@ namespace Algorithms.Graphs
                         return true;
 
                     // If an adjacent is visited and NOT parent of current vertex, then there is a cycle.
-                    else if (parent != (object)null && !adjacent.IsEqualTo((T)parent))
+                    if (parent != (object)null && !adjacent.IsEqualTo((T)parent))
                         return true;
                 }
             }
-            
+
             return false;
         }
 
@@ -72,7 +72,7 @@ namespace Algorithms.Graphs
                         return true;
 
                     // If an adjacent is visited and is on the recursion stack then there is a cycle.
-                    else if (recursionStack.Contains(adjacent))
+                    if (recursionStack.Contains(adjacent))
                         return true;
                 }
             }
@@ -86,18 +86,18 @@ namespace Algorithms.Graphs
         /// <summary>
         /// Returns true if Graph has cycle.
         /// </summary>
-        public static bool IsCyclic<T> (IGraph<T> Graph) where T : IComparable<T>
+        public static bool IsCyclic<T>(IGraph<T> Graph) where T : IComparable<T>
         {
             if (Graph == null)
                 throw new ArgumentNullException();
 
             var visited = new HashSet<T>();
             var recursionStack = new HashSet<T>();
-            
-            if(Graph.IsDirected)
+
+            if (Graph.IsDirected)
             {
-                foreach(var vertex in Graph.Vertices)
-                    if(_isDirectedCyclic<T>(Graph, vertex, ref visited, ref recursionStack))
+                foreach (var vertex in Graph.Vertices)
+                    if (_isDirectedCyclic<T>(Graph, vertex, ref visited, ref recursionStack))
                         return true;
             }
             else

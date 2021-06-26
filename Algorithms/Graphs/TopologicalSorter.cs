@@ -1,10 +1,11 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
+﻿/***
+ * Computes one topological sorting of a DAG (Directed Acyclic Graph). 
+ * This class depends on the CyclesDetector static class.
+ */
 
-using Algorithms.Common;
+using System;
+using System.Collections.Generic;
 using DataStructures.Graphs;
-using DataStructures.Lists;
 
 namespace Algorithms.Graphs
 {
@@ -20,7 +21,7 @@ namespace Algorithms.Graphs
             foreach (var adjacent in graph.Neighbours(source))
                 if (!visited.Contains(adjacent))
                     _topoSortHelper<T>(graph, adjacent, ref topoSortStack, ref visited);
-            
+
             topoSortStack.Push(source);
         }
 
@@ -33,14 +34,14 @@ namespace Algorithms.Graphs
             // If the graph is either null or is not a DAG, throw exception.
             if (Graph == null)
                 throw new ArgumentNullException();
-            else if (!Graph.IsDirected || CyclesDetector.IsCyclic<T>(Graph))
+            if (!Graph.IsDirected || CyclesDetector.IsCyclic<T>(Graph))
                 throw new Exception("The graph is not a DAG.");
 
             var visited = new HashSet<T>();
             var topoSortStack = new DataStructures.Lists.Stack<T>();
 
-            foreach(var vertex in Graph.Vertices)
-                if(!visited.Contains(vertex))
+            foreach (var vertex in Graph.Vertices)
+                if (!visited.Contains(vertex))
                     _topoSortHelper<T>(Graph, vertex, ref topoSortStack, ref visited);
 
             return topoSortStack;

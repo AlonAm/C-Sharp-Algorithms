@@ -1,19 +1,21 @@
-﻿using System;
+﻿/***
+ * The Directed Sparse Graph Data Structure.
+ * 
+ * Definition:
+ * A sparse graph is a graph G = (V, E) in which |E| = O(|V|).
+ * A directed graph is a graph where each edge follow one direction only between any two vertices.
+ * 
+ * An adjacency-list digraph (directed-graph) representation. 
+ * Implements the IGraph<T> interface.
+ */
+
+using System;
 using System.Collections.Generic;
 
 using DataStructures.Lists;
 
 namespace DataStructures.Graphs
 {
-    /// <summary>
-    /// The Directed Sparse Graph Data Structure.
-    /// 
-    /// Definition:
-    /// A sparse graph is a graph G = (V, E) in which |E| = O(|V|).
-    /// A directed graph is a graph where each edge follow one direction only between any two vertices.
-    /// 
-    /// This class represents the digraph as an adjacency list (dictionary).
-    /// </summary>
     public class DirectedSparseGraph<T> : IGraph<T> where T : IComparable<T>
     {
         /// <summary>
@@ -89,6 +91,73 @@ namespace DataStructures.Graphs
             }
         }
 
+
+        IEnumerable<IEdge<T>> IGraph<T>.Edges
+        {
+            get { return this.Edges; }
+        }
+
+        IEnumerable<IEdge<T>> IGraph<T>.IncomingEdges(T vertex)
+        {
+            return this.IncomingEdges(vertex);
+        }
+
+        IEnumerable<IEdge<T>> IGraph<T>.OutgoingEdges(T vertex)
+        {
+            return this.OutgoingEdges(vertex);
+        }
+
+
+        /// <summary>
+        /// An enumerable collection of all directed unweighted edges in graph.
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> Edges
+        {
+            get
+            {
+                foreach (var vertex in _adjacencyList)
+                    foreach (var adjacent in vertex.Value)
+                        yield return (new UnweightedEdge<T>(
+                            vertex.Key,   // from
+                            adjacent      // to
+                        ));
+            }
+        }
+
+        /// <summary>
+        /// Get all incoming directed unweighted edges to a vertex.
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> IncomingEdges(T vertex)
+        {
+            if (!HasVertex(vertex))
+                throw new KeyNotFoundException("Vertex doesn't belong to graph.");
+            
+            foreach(var adjacent in _adjacencyList.Keys)
+            {
+                if (_adjacencyList[adjacent].Contains(vertex))
+                    yield return (new UnweightedEdge<T>(
+                        adjacent,   // from
+                        vertex      // to
+                    ));
+            }//end-foreach
+        }
+
+        /// <summary>
+        /// Get all outgoing directed unweighted edges from a vertex.
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> OutgoingEdges(T vertex)
+        {
+            if (!HasVertex(vertex))
+                throw new KeyNotFoundException("Vertex doesn't belong to graph.");
+
+            foreach(var adjacent in _adjacencyList[vertex])
+                yield return (new UnweightedEdge<T>(
+                    vertex,     // from
+                    adjacent    // to
+                ));
+        }
+
+
         /// <summary>
         /// Connects two vertices together in the direction: first->second.
         /// </summary>
@@ -97,7 +166,7 @@ namespace DataStructures.Graphs
             // Check existence of nodes and non-existence of edge
             if (!HasVertex(source) || !HasVertex(destination))
                 return false;
-            else if (_doesEdgeExist(source, destination))
+            if (_doesEdgeExist(source, destination))
                 return false;
 
             // Add edge from source to destination
@@ -117,7 +186,7 @@ namespace DataStructures.Graphs
             // Check existence of nodes and non-existence of edge
             if (!HasVertex(source) || !HasVertex(destination))
                 return false;
-            else if (!_doesEdgeExist(source, destination))
+            if (!_doesEdgeExist(source, destination))
                 return false;
 
             // Remove edge from source to destination
@@ -268,7 +337,7 @@ namespace DataStructures.Graphs
             // Check for existence of source
             if (VerticesCount == 0)
                 return new ArrayList<T>(0);
-            else if (!HasVertex(source))
+            if (!HasVertex(source))
                 throw new KeyNotFoundException("The source vertex doesn't exist.");
 
             var visited = new HashSet<T>();
@@ -313,7 +382,7 @@ namespace DataStructures.Graphs
             // Check for existence of source
             if (VerticesCount == 0)
                 return new ArrayList<T>(0);
-            else if (!HasVertex(source))
+            if (!HasVertex(source))
                 throw new KeyNotFoundException("The source vertex doesn't exist.");
 
             var visited = new HashSet<T>();

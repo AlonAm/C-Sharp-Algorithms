@@ -1,10 +1,12 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
+﻿/***
+ * Computes Dijktra's shortest paths for all pairs of vertices in a graph. 
+ * This is a wrapper class that applies single-source dijkstra shortest paths (DijkstraShortestPaths<TG, TV>) 
+ * to all vertices of a graph and saves the results in a dictionary index by the vertices.
+ */
 
-using Algorithms.Common;
+using System;
+using System.Collections.Generic;
 using DataStructures.Graphs;
-using DataStructures.Heaps;
 
 namespace Algorithms.Graphs
 {
@@ -28,10 +30,11 @@ namespace Algorithms.Graphs
 
             // Initialize the all pairs dictionary
             _allPairsDjkstra = new Dictionary<TVertex, DijkstraShortestPaths<TGraph, TVertex>>();
-            
+
             var vertices = Graph.Vertices;
 
-            foreach(var vertex in vertices) {
+            foreach (var vertex in vertices)
+            {
                 var dijkstra = new DijkstraShortestPaths<TGraph, TVertex>(Graph, vertex);
                 _allPairsDjkstra.Add(vertex, dijkstra);
             }

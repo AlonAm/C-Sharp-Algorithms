@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-
 using Algorithms.Common;
 using DataStructures.Graphs;
-using DataStructures.Heaps;
 
 namespace Algorithms.Graphs
 {
@@ -37,21 +35,23 @@ namespace Algorithms.Graphs
         /// </summary>
         public BellmanFordShortestPaths(TGraph Graph, TVertex Source)
         {
-            if (Graph == null)
-                throw new ArgumentNullException();
-            else if (!Graph.HasVertex(Source))
-                throw new ArgumentException("The source vertex doesn't belong to graph.");
+            if (Graph == null) {
+                throw new ArgumentNullException ();
+            } else {
+                if (!Graph.HasVertex (Source))
+                    throw new ArgumentException ("The source vertex doesn't belong to graph.");
 
-            // Init
-            _initializeDataMembers(Graph);
+                // Init
+                _initializeDataMembers (Graph);
 
-            // Traverse the graph
-            var status = _bellmanFord(Graph, Source);
+                // Traverse the graph
+                var status = _bellmanFord (Graph, Source);
 
-            if (status == false)
-                throw new Exception("Negative-weight cycle detected.");
+                if (status == false)
+                    throw new Exception ("Negative-weight cycle detected.");
 
-            Debug.Assert(_checkOptimalityConditions(Graph, Source));
+                Debug.Assert (_checkOptimalityConditions (Graph, Source));
+            }
         }
 
 
@@ -67,7 +67,7 @@ namespace Algorithms.Graphs
             int srcIndex = _nodesToIndices[source];
             _distances[srcIndex] = 0;
 
-            var edges = graph.Edges;
+            var edges = graph.Edges as IEnumerable<WeightedEdge<TVertex>>;
 
             // First pass
             // Calculate shortest paths and relax all edges.
@@ -254,7 +254,7 @@ namespace Algorithms.Graphs
         {
             if (!_nodesToIndices.ContainsKey(destination))
                 throw new Exception("Graph doesn't have the specified vertex.");
-            else if (!HasPathTo(destination))
+            if (!HasPathTo(destination))
                 return null;
 
             int dstIndex = _nodesToIndices[destination];

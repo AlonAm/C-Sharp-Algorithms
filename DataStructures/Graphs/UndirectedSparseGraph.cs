@@ -1,18 +1,19 @@
-﻿using System;
+﻿/***
+ * The Sparse Graph Data Structure.
+ * Definition: A sparse graph is a graph G = (V, E) in which |E| = O(|V|).
+ * 
+ * An adjacency-list graph representation. Implemented using a Dictionary. The nodes are inserted as keys, 
+ * and the neighbors of every node are implemented as a doubly-linked list of nodes. 
+ * This class implements the IGraph<T> interface.
+ */
+
+using System;
 using System.Collections.Generic;
 
 using DataStructures.Lists;
 
 namespace DataStructures.Graphs
 {
-    /// <summary>
-    /// The Sparse Graph Data Structure.
-    /// 
-    /// Definition:
-    /// A sparse graph is a graph G = (V, E) in which |E| = O(|V|).
-    /// 
-    /// This class represents the graph as an adjacency list (dictionary).
-    /// </summary>
     public class UndirectedSparseGraph<T> : IGraph<T> where T : IComparable<T>
     {
         /// <summary>
@@ -91,6 +92,74 @@ namespace DataStructures.Graphs
             }
         }
 
+
+        IEnumerable<IEdge<T>> IGraph<T>.Edges
+        {
+            get { return this.Edges; }
+        }
+
+        IEnumerable<IEdge<T>> IGraph<T>.IncomingEdges(T vertex)
+        {
+            return this.IncomingEdges(vertex);
+        }
+
+        IEnumerable<IEdge<T>> IGraph<T>.OutgoingEdges(T vertex)
+        {
+            return this.OutgoingEdges(vertex);
+        }
+
+
+        /// <summary>
+        /// An enumerable collection of all unweighted edges in Graph.
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> Edges
+        {
+            get
+            {
+                var seen = new HashSet<KeyValuePair<T, T>>();
+
+                foreach (var vertex in _adjacencyList)
+                {
+                    foreach (var adjacent in vertex.Value)
+                    {
+                        var incomingEdge = new KeyValuePair<T, T>(adjacent, vertex.Key);
+                        var outgoingEdge = new KeyValuePair<T, T>(vertex.Key, adjacent);
+
+                        if (seen.Contains(incomingEdge) || seen.Contains(outgoingEdge))
+                            continue;
+                        seen.Add(outgoingEdge);
+
+                        yield return (new UnweightedEdge<T>(outgoingEdge.Key, outgoingEdge.Value));
+                    }
+                }//end-foreach
+            }
+        }
+
+        /// <summary>
+        /// Get all incoming unweighted edges to a vertex
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> IncomingEdges(T vertex)
+        {
+            if (!HasVertex(vertex))
+                throw new KeyNotFoundException("Vertex doesn't belong to graph.");
+
+            foreach(var adjacent in _adjacencyList[vertex])
+                yield return (new UnweightedEdge<T>(adjacent, vertex));
+        }
+
+        /// <summary>
+        /// Get all outgoing unweighted edges from a vertex.
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> OutgoingEdges(T vertex)
+        {
+            if (!HasVertex(vertex))
+                throw new KeyNotFoundException("Vertex doesn't belong to graph.");
+
+            foreach(var adjacent in _adjacencyList[vertex])
+                yield return (new UnweightedEdge<T>(vertex, adjacent));
+        }
+
+
         /// <summary>
         /// Connects two vertices together.
         /// </summary>
@@ -98,7 +167,7 @@ namespace DataStructures.Graphs
         {
             if (!_adjacencyList.ContainsKey(firstVertex) || !_adjacencyList.ContainsKey(secondVertex))
                 return false;
-            else if (_doesEdgeExist(firstVertex, secondVertex))
+            if (_doesEdgeExist(firstVertex, secondVertex))
                 return false;
 
             _adjacencyList[firstVertex].Append(secondVertex);
@@ -117,7 +186,7 @@ namespace DataStructures.Graphs
         {
             if (!_adjacencyList.ContainsKey(firstVertex) || !_adjacencyList.ContainsKey(secondVertex))
                 return false;
-            else if (!_doesEdgeExist(firstVertex, secondVertex))
+            if (!_doesEdgeExist(firstVertex, secondVertex))
                 return false;
 
             _adjacencyList[firstVertex].Remove(secondVertex);
@@ -267,7 +336,7 @@ namespace DataStructures.Graphs
         {
             if (VerticesCount == 0)
                 return new ArrayList<T>();
-            else if (!HasVertex(source))
+            if (!HasVertex(source))
                 throw new Exception("The specified starting vertex doesn't exist.");
 
             var visited = new HashSet<T>();
@@ -311,7 +380,7 @@ namespace DataStructures.Graphs
         {
             if (VerticesCount == 0)
                 return new ArrayList<T>();
-            else if (!HasVertex(source))
+            if (!HasVertex(source))
                 throw new Exception("The specified starting vertex doesn't exist.");
 
 

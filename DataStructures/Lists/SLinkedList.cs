@@ -34,7 +34,7 @@ namespace DataStructures.Lists
 
         public SLinkedListNode<T> Next
         {
-            get { return this._next;  }
+            get { return this._next; }
             set { this._next = value; }
         }
 
@@ -45,8 +45,8 @@ namespace DataStructures.Lists
             return this.Data.CompareTo(other.Data);
         }
     }
-    
-    
+
+
     /// <summary>
     /// Singly Linked List Data Structure
     /// </summary>
@@ -58,12 +58,12 @@ namespace DataStructures.Lists
         private int _count;
         private SLinkedListNode<T> _firstNode { get; set; }
         private SLinkedListNode<T> _lastNode { get; set; }
-        
+
         public int Count
         {
             get { return _count; }
         }
-        
+
         public virtual SLinkedListNode<T> Head
         {
             get { return this._firstNode; }
@@ -110,7 +110,8 @@ namespace DataStructures.Lists
                 {
                     throw new Exception("Empty list.");
                 }
-                else if (_lastNode == null)
+
+                if (_lastNode == null)
                 {
                     var currentNode = _firstNode;
                     while (currentNode.Next != null)
@@ -120,10 +121,8 @@ namespace DataStructures.Lists
                     _lastNode = currentNode;
                     return currentNode.Data;
                 }
-                else
-                {
-                    return _lastNode.Data;
-                }
+
+                return _lastNode.Data;
             }
         }
 
@@ -285,11 +284,13 @@ namespace DataStructures.Lists
             {
                 return First;
             }
-            else if (index == (Count - 1))
+
+            if (index == (Count - 1))
             {
                 return Last;
             }
-            else if (index > 0 && index < (Count - 1))
+
+            if (index > 0 && index < (Count - 1))
             {
                 var currentNode = _firstNode;
                 for (int i = 0; i < index; ++i)
@@ -298,10 +299,8 @@ namespace DataStructures.Lists
                 }
                 return currentNode.Data;
             }
-            else
-            {
-                throw new IndexOutOfRangeException();
-            }
+
+            throw new IndexOutOfRangeException();
         }
 
         /// <summary>
@@ -320,7 +319,8 @@ namespace DataStructures.Lists
             {
                 return newList;
             }
-            else if (index < 0 || index > Count)
+
+            if (index < 0 || index > Count)
             {
                 throw new IndexOutOfRangeException();
             }
@@ -352,19 +352,24 @@ namespace DataStructures.Lists
             var currentNode = _firstNode;
             while (currentNode != null)
             {
+                var minNode = currentNode;
                 var nextNode = currentNode.Next;
                 while (nextNode != null)
                 {
-                    if (nextNode.Data.IsLessThan(currentNode.Data))
+                    if (nextNode.Data.IsLessThan(minNode.Data))
                     {
-                        var temp = nextNode.Data;
-                        nextNode.Data = currentNode.Data;
-                        currentNode.Data = temp;
+                        minNode = nextNode;
                     }
 
                     nextNode = nextNode.Next;
                 }
 
+                if (minNode != currentNode)
+                {
+                    var temp = minNode.Data;
+                    minNode.Data = currentNode.Data;
+                    currentNode.Data = temp;
+                }
                 currentNode = currentNode.Next;
             }
         }

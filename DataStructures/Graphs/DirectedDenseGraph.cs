@@ -1,4 +1,16 @@
-﻿using System;
+﻿/***
+ * The Directed Dense Graph Data Structure.
+ * 
+ * Definition:
+ * A dense graph is a graph G = (V, E) in which |E| = O(|V|^2).
+ * A directed graph is a graph where each edge follow one direction only between any two vertices.
+ * 
+ * An incidence-matrix digraph representation. Follows almost the same implementation 
+ * details of the Undirected version, except for managing the directed edges.
+ * Implements the IGraph<T> interface.
+ */
+
+using System;
 using System.Collections.Generic;
 
 using DataStructures.Common;
@@ -6,15 +18,6 @@ using DataStructures.Lists;
 
 namespace DataStructures.Graphs
 {
-    /// <summary>
-    /// The Directed Dense Graph Data Structure.
-    /// 
-    /// Definition:
-    /// A dense graph is a graph G = (V, E) in which |E| = O(|V|^2).
-    /// A directed graph is a graph where each edge follow one direction only between any two vertices.
-    /// 
-    /// This class represents the graph as an incidence-matrix (two dimensional boolean array).
-    /// </summary>
     public class DirectedDenseGraph<T> : IGraph<T> where T : IComparable<T>
     {
         /// <summary>
@@ -98,6 +101,81 @@ namespace DataStructures.Graphs
             }
         }
 
+
+        IEnumerable<IEdge<T>> IGraph<T>.Edges
+        {
+            get { return this.Edges; }
+        }
+
+        IEnumerable<IEdge<T>> IGraph<T>.IncomingEdges(T vertex)
+        {
+            return this.IncomingEdges(vertex);
+        }
+
+        IEnumerable<IEdge<T>> IGraph<T>.OutgoingEdges(T vertex)
+        {
+            return this.OutgoingEdges(vertex);
+        }
+
+
+        /// <summary>
+        /// An enumerable collection of all directed unweighted edges in graph.
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> Edges
+        {
+            get
+            {
+                foreach (var vertex in _vertices)
+                    foreach (var outgoingEdge in OutgoingEdges((T)vertex))
+                        yield return outgoingEdge;
+            }
+        }
+
+        /// <summary>
+        /// Get all incoming directed unweighted edges to a vertex.
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> IncomingEdges(T vertex)
+        {
+            if (!HasVertex(vertex))
+                throw new KeyNotFoundException("Vertex doesn't belong to graph.");
+
+            int source = _vertices.IndexOf(vertex);
+
+            for (int adjacent = 0; adjacent < _vertices.Count; ++adjacent)
+            {
+                if (_vertices[adjacent] != null && _doesEdgeExist(adjacent, source))
+                {
+                    yield return (new UnweightedEdge<T>(
+                        (T)_vertices[adjacent], // from
+                        vertex                  // to
+                    ));
+                }
+            }//end-for
+        }
+
+        /// <summary>
+        /// Get all outgoing directed unweighted edges from a vertex.
+        /// </summary>
+        public virtual IEnumerable<UnweightedEdge<T>> OutgoingEdges(T vertex)
+        {
+            if (!HasVertex(vertex))
+                throw new KeyNotFoundException("Vertex doesn't belong to graph.");
+
+            int source = _vertices.IndexOf(vertex);
+
+            for (int adjacent = 0; adjacent < _vertices.Count; ++adjacent)
+            {
+                if (_vertices[adjacent] != null && _doesEdgeExist(source, adjacent))
+                {
+                    yield return (new UnweightedEdge<T>(
+                        vertex,                 // from
+                        (T)_vertices[adjacent]  // to
+                    ));
+                }
+            }//end-for
+        }
+
+
         /// <summary>
         /// Connects two vertices together in the direction: first->second.
         /// </summary>
@@ -110,7 +188,7 @@ namespace DataStructures.Graphs
             // Check existence of vertices and non-existence of edge
             if (srcIndex == -1 || dstIndex == -1)
                 return false;
-            else if (_doesEdgeExist(srcIndex, dstIndex))
+            if (_doesEdgeExist(srcIndex, dstIndex))
                 return false;
 
             _adjacencyMatrix[srcIndex, dstIndex] = true;
@@ -133,7 +211,7 @@ namespace DataStructures.Graphs
             // Check existence of vertices and non-existence of edge
             if (srcIndex == -1 || dstIndex == -1)
                 return false;
-            else if (!_doesEdgeExist(srcIndex, dstIndex))
+            if (!_doesEdgeExist(srcIndex, dstIndex))
                 return false;
 
             _adjacencyMatrix[srcIndex, dstIndex] = false;
@@ -330,7 +408,7 @@ namespace DataStructures.Graphs
         {
             if (_verticesCount == 0)
                 return new ArrayList<T>();
-            else if (!HasVertex(source))
+            if (!HasVertex(source))
                 throw new Exception("The specified starting vertex doesn't exist.");
 
             var stack = new Lists.Stack<T>(_verticesCount);
@@ -374,7 +452,7 @@ namespace DataStructures.Graphs
         {
             if (_verticesCount == 0)
                 return new ArrayList<T>();
-            else if (!HasVertex(source))
+            if (!HasVertex(source))
                 throw new Exception("The specified starting vertex doesn't exist.");
 
             var visited = new HashSet<T>();

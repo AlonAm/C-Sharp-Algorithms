@@ -4,14 +4,20 @@ namespace DataStructures.Trees
 {
     public interface IBinarySearchTree<T> where T : System.IComparable<T>
     {
-        /// Returns the number of elements in the Tree
-        int Count();
+        // Returns a copy of the tree root
+        BSTNode<T> Root { get; }
+
+        // Returns the number of elements in the Tree
+        int Count { get; }
 
         // Checks if the tree is empty.
-        bool IsEmpty();
+        bool IsEmpty { get; }
 
         // Returns the height of the tree.
-        int Height();
+        int Height { get; }
+
+        // Returns true if tree allows inserting duplicates; otherwise, false
+        bool AllowsDuplicates { get; }
 
         // Inserts an element to the tree
         void Insert(T item);
@@ -31,6 +37,9 @@ namespace DataStructures.Trees
         // Remove an element from tree
         void Remove(T item);
 
+        // Check for the existence of an item
+        bool Contains(T item);
+
         // Finds the minimum element.
         T FindMin();
 
@@ -41,7 +50,7 @@ namespace DataStructures.Trees
         T Find(T item);
 
         // Finds all the elements in the tree that match the predicate.
-        List<T> FindAll(System.Predicate<T> searchPredicate);
+        IEnumerable<T> FindAll(System.Predicate<T> searchPredicate);
 
         // Return an array of the tree elements
         T[] ToArray();
@@ -65,21 +74,29 @@ namespace DataStructures.Trees
     /// <summary>
     /// The itemed version of the Binary Search Tree.
     /// </summary>
-    /// <typeparam name="K">Type of items.</typeparam>
-    /// <typeparam name="V">Type of records per node.</typeparam>
-    public interface IBinarySearchTree<K, V> where K : System.IComparable<K>
+    /// <typeparam name="TKey">Type of items.</typeparam>
+    /// <typeparam name="TValue">Type of records per node.</typeparam>
+    public interface IBinarySearchTree<TKey, TValue> where TKey : System.IComparable<TKey>
     {
-        int Count();
-        bool IsEmpty();
-        void Insert(K item, V value);
+        BSTMapNode<TKey, TValue> Root { get; }
+        int Count { get; }
+        bool IsEmpty { get; }
+        int Height { get; }
+        bool AllowsDuplicates { get; }
+        void Insert(TKey key, TValue value);
+        void Insert(KeyValuePair<TKey, TValue> keyValuePair);
+        void Insert(KeyValuePair<TKey, TValue>[] collection);
+        void Insert(List<KeyValuePair<TKey, TValue>> collection);
         void RemoveMin();
         void RemoveMax();
-        void Remove(K item);
-        K FindMin();
-        K FindMax();
-        K Find(K item);
-        List<V> FindAll(System.Predicate<K> searchPredicate);
-        List<V> Sort();
+        void Remove(TKey item);
+        bool Contains(TKey item);
+        KeyValuePair<TKey, TValue> FindMin();
+        KeyValuePair<TKey, TValue> FindMax();
+        KeyValuePair<TKey, TValue> Find(TKey item);
+        IEnumerable<KeyValuePair<TKey, TValue>> FindAll(System.Predicate<TKey> searchPredicate);
+        KeyValuePair<TKey, TValue>[] ToArray();
+        List<KeyValuePair<TKey, TValue>> ToList();
         void Clear();
     }
 }

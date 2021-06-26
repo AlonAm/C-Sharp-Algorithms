@@ -7,7 +7,7 @@ namespace DataStructures.Lists
     /// <summary>
     /// The Array-Based List Data Structure.
     /// </summary>
-	public class ArrayList<T> : IEnumerable<T>
+    public class ArrayList<T> : IEnumerable<T>
     {
         /// <summary>
         /// Instance variables.
@@ -30,8 +30,8 @@ namespace DataStructures.Lists
         private const int _defaultCapacity = 8;
 
         // The internal array of elements.
-		// NOT A PROPERTY.
-		private T[] _collection;
+        // NOT A PROPERTY.
+        private T[] _collection;
 
         // This keeps track of the number of elements added to the array.
         // Serves as an index of last item + 1.
@@ -49,7 +49,8 @@ namespace DataStructures.Lists
             {
                 throw new ArgumentOutOfRangeException();
             }
-            else if (capacity == 0)
+
+            if (capacity == 0)
             {
                 _collection = _emptyArray;
             }
@@ -80,10 +81,10 @@ namespace DataStructures.Lists
                 // Note that this check works even when _items.Length overflowed thanks to the (uint) cast
                 int maxCapacity = (DefaultMaxCapacityIsX64 == true ? MAXIMUM_ARRAY_LENGTH_x64 : MAXIMUM_ARRAY_LENGTH_x86);
 
-				if (newCapacity < minCapacity)
-					newCapacity = minCapacity;
+                if (newCapacity < minCapacity)
+                    newCapacity = minCapacity;
 
-				if (newCapacity >= maxCapacity)
+                if (newCapacity >= maxCapacity)
                 {
                     newCapacity = maxCapacity - 1;
                     IsMaximumCapacityReached = true;
@@ -104,7 +105,7 @@ namespace DataStructures.Lists
             {
                 try
                 {
-					Array.Resize<T>(ref _collection, newCapacity);
+                    Array.Resize<T>(ref _collection, newCapacity);
                 }
                 catch (OutOfMemoryException)
                 {
@@ -167,10 +168,8 @@ namespace DataStructures.Lists
                 {
                     throw new IndexOutOfRangeException("List is empty.");
                 }
-                else
-                {
-                    return _collection[0];
-                }
+
+                return _collection[0];
             }
         }
 
@@ -187,10 +186,8 @@ namespace DataStructures.Lists
                 {
                     throw new IndexOutOfRangeException("List is empty.");
                 }
-                else
-                {
-                    return _collection[Count - 1];
-                }
+
+                return _collection[Count - 1];
             }
         }
 
@@ -249,18 +246,18 @@ namespace DataStructures.Lists
             if (elements == null)
                 throw new ArgumentNullException();
 
-			// make sure the size won't overflow by adding the range
-			if (((uint)_size + elements.Count ()) > MAXIMUM_ARRAY_LENGTH_x64)
-				throw new OverflowException ();
+            // make sure the size won't overflow by adding the range
+            if (((uint)_size + elements.Count()) > MAXIMUM_ARRAY_LENGTH_x64)
+                throw new OverflowException();
 
-			// grow the internal collection once to avoid doing multiple redundant grows
-			if (elements.Any ()) 
-			{
-				_ensureCapacity (_size + elements.Count ());
+            // grow the internal collection once to avoid doing multiple redundant grows
+            if (elements.Any())
+            {
+                _ensureCapacity(_size + elements.Count());
 
-				foreach (var element in elements)
-					this.Add (element);
-			}
+                foreach (var element in elements)
+                    this.Add(element);
+            }
         }
 
 
@@ -275,14 +272,14 @@ namespace DataStructures.Lists
             if (((uint)_size + count) > MAXIMUM_ARRAY_LENGTH_x64)
                 throw new OverflowException();
 
-			// grow the internal collection once to avoid doing multiple redundant grows
-			if (count > 0) 
-			{
-				_ensureCapacity (_size + count);
-			
-				for (int i = 0; i < count; i++)
-					this.Add (value);
-			}
+            // grow the internal collection once to avoid doing multiple redundant grows
+            if (count > 0)
+            {
+                _ensureCapacity(_size + count);
+
+                for (int i = 0; i < count; i++)
+                    this.Add(value);
+            }
         }
 
 
@@ -808,21 +805,21 @@ namespace DataStructures.Lists
         }
 
 
-		/********************************************************************************/
+        /********************************************************************************/
 
 
-		public IEnumerator<T> GetEnumerator()
-		{
-			for (int i = 0; i < Count; i++)
-			{
-				yield return _collection [i];
-			}
-		}
+        public IEnumerator<T> GetEnumerator()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                yield return _collection[i];
+            }
+        }
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-		{
-			return this.GetEnumerator ();
-		}
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
+        }
 
     }
 

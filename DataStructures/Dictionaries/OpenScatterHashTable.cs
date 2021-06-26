@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-
 using DataStructures.Common;
-using DataStructures.Lists;
 
 namespace DataStructures.Dictionaries
 {
-    
+
     /// <summary>
     /// Hash Table with Open Addressing.
     /// </summary>
@@ -44,11 +42,11 @@ namespace DataStructures.Dictionaries
         private int _size;
         private decimal _loadFactor;
         private HashTableEntry<TKey, TValue>[] _hashTableStore;
-        
+
         // Initialization-related
         private const int _defaultCapacity = 7;
         private static readonly HashTableEntry<TKey, TValue>[] _emptyArray = new HashTableEntry<TKey, TValue>[_defaultCapacity];
-        
+
         // Helper collections.
         private List<TKey> _keysCollection { get; set; }
         private List<TValue> _valuesCollection { get; set; }

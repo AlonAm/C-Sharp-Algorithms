@@ -1,145 +1,16 @@
 ﻿using System;
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
+
+using System.Collections;
 
 using DataStructures.Common;
 
 namespace DataStructures.Trees
 {
     /// <summary>
-    /// The binary search tree node.
-    /// </summary>
-
-    public class BSTNode<T> : IComparable<BSTNode<T>> where T : IComparable<T>
-    {
-        private T _value;
-        private BSTNode<T> _parent;
-        private BSTNode<T> _left;
-        private BSTNode<T> _right;
-
-        public BSTNode() : this(default(T), 0, null, null, null) { }
-        public BSTNode(T value) : this(value, 0, null, null, null) { }
-        public BSTNode(T value, int subTreeSize, BSTNode<T> parent, BSTNode<T> left, BSTNode<T> right)
-        {
-            Value = value;
-            Parent = parent;
-            LeftChild = left;
-            RightChild = right;
-        }
-
-        public virtual T Value
-        {
-            get { return this._value; }
-            set { this._value = value; }
-        }
-
-        public virtual BSTNode<T> Parent
-        {
-            get { return this._parent; }
-            set { this._parent = value; }
-        }
-
-        public virtual BSTNode<T> LeftChild
-        {
-            get { return this._left; }
-            set { this._left = value; }
-        }
-
-        public virtual BSTNode<T> RightChild
-        {
-            get { return this._right; }
-            set { this._right = value; }
-        }
-
-        /// <summary>
-        /// Checks whether this node has any children.
-        /// </summary>
-        public virtual bool HasChildren
-        {
-            get { return (this.ChildrenCount > 0); }
-        }
-
-        /// <summary>
-        /// Checks whether this node has left child.
-        /// </summary>
-        public virtual bool HasLeftChild
-        {
-            get { return (this.LeftChild != null); }
-        }
-
-        /// <summary>
-        /// Checks whether this node has right child.
-        /// </summary>
-        public virtual bool HasRightChild
-        {
-            get { return (this.RightChild != null); }
-        }
-
-        /// <summary>
-        /// Checks whether this node is the left child of it's parent.
-        /// </summary>
-        public virtual bool IsLeftChild
-        {
-            get { return (this.Parent != null && this.Parent.LeftChild == this); }
-        }
-
-        /// <summary>
-        /// Checks whether this node is the left child of it's parent.
-        /// </summary>
-        public virtual bool IsRightChild
-        {
-            get { return (this.Parent != null && this.Parent.RightChild == this); }
-        }
-
-        /// <summary>
-        /// Checks whether this node is a leaf node.
-        /// </summary>
-        public virtual bool IsLeafNode
-        {
-            get { return (this.ChildrenCount == 0); }
-        }
-
-        /// <summary>
-        /// Returns number of direct descendents: 0, 1, 2 (none, left or right, or both).
-        /// </summary>
-        /// <returns>Number (0,1,2)</returns>
-        public virtual int ChildrenCount
-        {
-            get
-            {
-                int count = 0;
-
-                if (this.HasLeftChild)
-                    count++;
-                if (this.HasRightChild)
-                    count++;
-
-                return count;
-            }
-        }
-
-        /// <summary>
-        /// Compares to.
-        /// </summary>
-        public virtual int CompareTo(BSTNode<T> other)
-        {
-            if (other == null)
-                return -1;
-
-            return this.Value.CompareTo(other.Value);
-        }
-    }//end-of-bstnode
-
-
-    /******************************************************************************/
-
-
-    /// <summary>
     /// Implements a generic Binary Search Tree data structure.
     /// </summary>
     /// <typeparam name="T">Type of elements.</typeparam>
-
     public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable<T>
     {
         /// <summary>
@@ -158,18 +29,36 @@ namespace DataStructures.Trees
         /// </summary>
         /// <returns></returns>
         protected int _count { get; set; }
-        private BSTNode<T> _root { get; set; }
+        protected bool _allowDuplicates { get; set; }
+        protected virtual BSTNode<T> _root { get; set; }
 
         public virtual BSTNode<T> Root
         {
             get { return this._root; }
-            set { this._root = value; }
+            internal set { this._root = value; }
         }
 
+
+        /// <summary>
+        /// CONSTRUCTOR.
+        /// Allows duplicates by default.
+        /// </summary>
         public BinarySearchTree()
         {
-            Root = null;
             _count = 0;
+            _allowDuplicates = true;
+            Root = null;
+        }
+
+        /// <summary>
+        /// CONSTRUCTOR.
+        /// If allowDuplictes is set to false, no duplicate items will be inserted.
+        /// </summary>
+        public BinarySearchTree(bool allowDuplicates)
+        {
+            _count = 0;
+            _allowDuplicates = allowDuplicates;
+            Root = null;
         }
 
 
@@ -187,6 +76,10 @@ namespace DataStructures.Trees
                     node.Parent.LeftChild = newNode;
                 else
                     node.Parent.RightChild = newNode;
+            }
+            else
+            {
+                Root = newNode;
             }
 
             if (newNode != null)
@@ -207,11 +100,12 @@ namespace DataStructures.Trees
 
             if (node.ChildrenCount == 2) // if both children are present
             {
-                var successor = node.RightChild;
+                var successor = _findNextLarger(node);
                 node.Value = successor.Value;
                 return (true && _remove(successor));
             }
-            else if (node.HasLeftChild) // if the node has only a LEFT child
+
+            if (node.HasLeftChild) // if the node has only a LEFT child
             {
                 _replaceNodeInParent(node, node.LeftChild);
                 _count--;
@@ -236,51 +130,55 @@ namespace DataStructures.Trees
         /// </summary>
         /// <param name="currentNode">Current node to insert afters.</param>
         /// <param name="newNode">New node to be inserted.</param>
-        protected virtual void _insertNode(BSTNode<T> newNode)
+        protected virtual bool _insertNode(BSTNode<T> newNode)
         {
             // Handle empty trees
             if (this.Root == null)
             {
                 Root = newNode;
                 _count++;
-                return;
+                return true;
             }
-            else
-            {
-                if (newNode.Parent == null)
-                    newNode.Parent = this.Root;
 
-                // Go Left
-                if (newNode.Parent.Value.IsGreaterThan(newNode.Value)) // newNode < parent
-                {
-                    if (newNode.Parent.HasLeftChild == false)
-                    {
-                        newNode.Parent.LeftChild = newNode;
-                        _count++;
-                        return;
-                    }
-                    else
-                    {
-                        newNode.Parent = newNode.Parent.LeftChild;
-                        _insertNode(newNode);
-                    }
-                }
-                // Go Right
-                else // new node > parent
-                {
-                    if (newNode.Parent.HasRightChild == false)
-                    {
-                        newNode.Parent.RightChild = newNode;
-                        _count++;
-                        return;
-                    }
-                    else
-                    {
-                        newNode.Parent = newNode.Parent.RightChild;
-                        _insertNode(newNode);
-                    }
-                }
+            if (newNode.Parent == null)
+                newNode.Parent = this.Root;
+
+            // Check for value equality and whether inserting duplicates is allowed
+            if (_allowDuplicates == false && newNode.Parent.Value.IsEqualTo(newNode.Value))
+            {
+                return false;
             }
+
+            // Go Left
+            if (newNode.Parent.Value.IsGreaterThan(newNode.Value)) // newNode < parent
+            {
+                if (newNode.Parent.HasLeftChild == false)
+                {
+                    newNode.Parent.LeftChild = newNode;
+
+                    // Increment count.
+                    _count++;
+
+                    return true;
+                }
+
+                newNode.Parent = newNode.Parent.LeftChild;
+                return _insertNode(newNode);
+            }
+            // Go Right
+
+            if (newNode.Parent.HasRightChild == false)
+            {
+                newNode.Parent.RightChild = newNode;
+
+                // Increment count.
+                _count++;
+
+                return true;
+            }
+
+            newNode.Parent = newNode.Parent.RightChild;
+            return _insertNode(newNode);
         }
 
         /// <summary>
@@ -291,24 +189,19 @@ namespace DataStructures.Trees
         /// <returns>Height of node's longest subtree</returns>
         protected virtual int _getTreeHeight(BSTNode<T> node)
         {
-            if (node == null || node.IsLeafNode == true)
+            if (node == null)
                 return 0;
-
-            if (node.ChildrenCount == 2) // it has both a right child and a left child
-            {
+            // Is leaf node
+            if (node.IsLeafNode)
+                return 1;
+            // Has two children
+            if (node.ChildrenCount == 2)
                 return (1 + Math.Max(_getTreeHeight(node.LeftChild), _getTreeHeight(node.RightChild)));
-            }
-            else if (node.HasLeftChild)
-            {
+            // Has only left
+            if (node.HasLeftChild)
                 return (1 + _getTreeHeight(node.LeftChild));
-            }
-            else if (node.HasRightChild)
-            {
-                return (1 + _getTreeHeight(node.RightChild));
-            }
-
-            // return-functions-fix
-            return 0;
+            // Has only right
+            return (1 + _getTreeHeight(node.RightChild));
         }
 
         /// <summary>
@@ -326,11 +219,13 @@ namespace DataStructures.Trees
             {
                 return currentNode;
             }
-            else if (currentNode.HasLeftChild && item.IsLessThan(currentNode.Value))
+
+            if (currentNode.HasLeftChild && item.IsLessThan(currentNode.Value))
             {
                 return _findNode(currentNode.LeftChild, item);
             }
-            else if (currentNode.HasRightChild && item.IsGreaterThan(currentNode.Value))
+
+            if (currentNode.HasRightChild && item.IsGreaterThan(currentNode.Value))
             {
                 return _findNode(currentNode.RightChild, item);
             }
@@ -461,18 +356,18 @@ namespace DataStructures.Trees
         /// Return the number of elements in this tree
         /// </summary>
         /// <returns></returns>
-        public virtual int Count()
+        public virtual int Count
         {
-            return _count;
+            get { return _count; }
         }
 
         /// <summary>
         /// Checks if tree is empty.
         /// </summary>
         /// <returns></returns>
-        public virtual bool IsEmpty()
+        public virtual bool IsEmpty
         {
-            return (_count == 0);
+            get { return (_count == 0); }
         }
 
         /// <summary>
@@ -480,13 +375,21 @@ namespace DataStructures.Trees
         /// Time-complexity: O(n), where n = number of nodes.
         /// </summary>
         /// <returns>Hight</returns>
-        public virtual int Height()
+        public virtual int Height
         {
-            if (IsEmpty())
-                return 0;
+            get
+            {
+                if (IsEmpty)
+                    return 0;
 
-            var currentNode = Root;
-            return _getTreeHeight(currentNode);
+                var currentNode = Root;
+                return _getTreeHeight(currentNode);
+            }
+        }
+
+        public virtual bool AllowsDuplicates
+        {
+            get { return _allowDuplicates; }
         }
 
         /// <summary>
@@ -497,8 +400,11 @@ namespace DataStructures.Trees
         {
             var newNode = new BSTNode<T>(item);
 
-            // Insert node recursively starting from the root.
-            _insertNode(newNode);
+            // Insert node recursively starting from the root. check for success status.
+            var success = _insertNode(newNode);
+
+            if (success == false && _allowDuplicates == false)
+                throw new InvalidOperationException("Tree does not allow inserting duplicate elements.");
         }
 
         /// <summary>
@@ -508,10 +414,10 @@ namespace DataStructures.Trees
         {
             if (collection == null)
                 throw new ArgumentNullException();
-                
-            if(collection.Length > 0)
+
+            if (collection.Length > 0)
             {
-                for(int i = 0; i < collection.Length; ++i)
+                for (int i = 0; i < collection.Length; ++i)
                 {
                     this.Insert(collection[i]);
                 }
@@ -541,7 +447,7 @@ namespace DataStructures.Trees
         /// <param name="item">item to remove.</param>
         public virtual void Remove(T item)
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             var node = _findNode(Root, item);
@@ -557,7 +463,7 @@ namespace DataStructures.Trees
         /// </summary>
         public virtual void RemoveMin()
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             var node = _findMinNode(Root);
@@ -569,7 +475,7 @@ namespace DataStructures.Trees
         /// </summary>
         public virtual void RemoveMax()
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             var node = _findMaxNode(Root);
@@ -586,12 +492,20 @@ namespace DataStructures.Trees
         }
 
         /// <summary>
+        /// Checks for the existence of an item
+        /// </summary>
+        public virtual bool Contains(T item)
+        {
+            return (_findNode(_root, item) != null);
+        }
+
+        /// <summary>
         /// Finds the minimum in tree 
         /// </summary>
         /// <returns>Min</returns>
         public virtual T FindMin()
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             return _findMinNode(Root).Value;
@@ -631,7 +545,7 @@ namespace DataStructures.Trees
         /// <returns>Max</returns>
         public virtual T FindMax()
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             return _findMaxNode(Root).Value;
@@ -644,15 +558,14 @@ namespace DataStructures.Trees
         /// <returns>Item.</returns>
         public virtual T Find(T item)
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             var node = _findNode(Root, item);
 
             if (node != null)
                 return node.Value;
-            else
-                throw new Exception("Item was not found.");
+            throw new Exception("Item was not found.");
         }
 
         /// <summary>
@@ -660,7 +573,7 @@ namespace DataStructures.Trees
         /// </summary>
         /// <param name="searchPredicate">The search predicate</param>
         /// <returns>ArrayList<T> of elements.</returns>
-        public virtual List<T> FindAll(Predicate<T> searchPredicate)
+        public virtual IEnumerable<T> FindAll(Predicate<T> searchPredicate)
         {
             var list = new List<T>();
             _findAll(Root, searchPredicate, ref list);
@@ -742,12 +655,9 @@ namespace DataStructures.Trees
             {
                 if (node == null)
                     return;
-                else
-                {
-                    traverseQueue.Enqueue(node);
-                    visitNode(node.LeftChild);
-                    visitNode(node.RightChild);
-                }
+                traverseQueue.Enqueue(node);
+                visitNode(node.LeftChild);
+                visitNode(node.RightChild);
             }
 
             public T Current
@@ -805,12 +715,9 @@ namespace DataStructures.Trees
             {
                 if (node == null)
                     return;
-                else
-                {
-                    visitNode(node.LeftChild);
-                    traverseQueue.Enqueue(node);
-                    visitNode(node.RightChild);
-                }
+                visitNode(node.LeftChild);
+                traverseQueue.Enqueue(node);
+                visitNode(node.RightChild);
             }
 
             public T Current
@@ -867,12 +774,9 @@ namespace DataStructures.Trees
             {
                 if (node == null)
                     return;
-                else
-                {
-                    visitNode(node.LeftChild);
-                    visitNode(node.RightChild);
-                    traverseQueue.Enqueue(node);
-                }
+                visitNode(node.LeftChild);
+                visitNode(node.RightChild);
+                traverseQueue.Enqueue(node);
             }
 
             public T Current

@@ -1,131 +1,218 @@
-# C# ALGORITHMS
+```
 
-### Implementations of Data Structures and Algorithms in C#.
-
-I started writing this organized collection of classes as part of my preparation for technical interviews. This is for educational purposes only. However, the source code is stable.
-
-This is a .NET solution and it can be opened with both Xamarin Studio (MonoDevelop) and Visual Studio. It has two separate projects: 1) Algorithms, 2) DataStructures. Both of them are class-library projects.
-
-The third project is called MainProgram and it has all the tests for all the implemented algorithms and data structures. It has two main directories:
- * [Algorithms Tests](MainProgram/AlgorithmsTests).
- * [Data Structures Tests](MainProgram/DataStructuresTests).
+                                          o---o    |   |                                 
+                                         /       --O---O--                               
+                                        O          |   |                                 
+                                         \       --O---O--                               
+                                          o---o    |   |                                 
 
 
-## Data Structures
+              O    o       o--o    o--o   o---o   o-O-o  o--O--o  o   o  o     o   o--o 
+             / \   |      o       o    o  |   |     |       |     |   |  |\   /|  |     
+            o---o  |      |  o-o  |    |  O--Oo     |       |     O---O  | \o/ |   o--o 
+            |   |  |      o    |  o    o  |  \      |       |     |   |  |     |      | 
+            o   o  O---o   o--o    o--o   o   \o  o-O-o     o     o   o  o     o  o---o 
 
-#### Lists:
+```
 
- * **[Single-Linked List](DataStructures/Lists/SLinkedList.cs).**
- * **[Double-Linked List](DataStructures/Lists/DLinkedList.cs).**
- * **[Array List](DataStructures/Lists/ArrayList.cs).** A generic arrays-based list. Implements auto-resizing and handles overflow.
- * **[Stack](DataStructures/Lists/Stack.cs).** Based on my *ArrayList\<T\>*.
- * **[Queue](DataStructures/Lists/Queue.cs).** Based on my *ArrayList\<T\>*.
+<p align="center">
+  <a href="LICENSE" alt="License">
+    <img src="https://img.shields.io/github/license/aalhour/C-Sharp-Algorithms?style=flat-square&color=blue" />
+  </a>
+  <a href="https://travis-ci.org/aalhour/C-Sharp-Algorithms" alt="Build">
+    <img src="https://img.shields.io/travis/aalhour/C-Sharp-Algorithms?style=flat-square&color=blue" />
+  </a>
+  <a href="https://github.com/aalhour/C-Sharp-Algorithms/graphs/contributors" alt="Contributors">
+    <img src="https://img.shields.io/github/contributors/aalhour/C-Sharp-Algorithms?style=flat-square&color=blue" />
+  </a>
+  <a href="https://github.com/aalhour/C-Sharp-Algorithms/pulse" alt="Activity">
+    <img src="https://img.shields.io/github/commit-activity/m/aalhour/C-Sharp-Algorithms?style=flat-square&color=blue" />
+  </a>
+</p>
 
-#### Priority Queues:
+##
+### WHAT IS C# ALGORITHMS?
 
- * **[Min-Priority Queue](DataStructures/Heaps/MinPriorityQueue.cs).** Based on my *MinHeap\<T\>*.
- * **[Keyed Priority Queue](DataStructures/Heaps/KeyedPriorityQueue.cs).** Based on my *MaxHeap\<T\>*.
+A plug-and-play class-library project of standard Data Structures and Algorithms, written in C#. It contains **75+** Data Structures and Algorithms, designed as Object-Oriented isolated components. Even though this project started for educational purposes, the implemented Data Structures and Algorithms are standard, efficient, stable and tested.
+
+##
+### BACK STORY
+
+This project originally started out as an interview preparation project. However, after receiving a great amount of positive responses on [reddit](https://redd.it/3etf9f), and noticing excitement from a few [GitHubers](https://github.com/aalhour/C-Sharp-Algorithms#contributors) to contribute furthermore to it, the project took on a different meaning. So, I decided to keep maintaining it as a reference for data structures and algorithm implementations in C# as well as my own research side-project under these topics.
+
+##
+### DESCRIPTION
+
+#### Solution Hierarchy:
+
+This is a C#.NET solution-project, and it contains three subprojects:
+
+  1. [Algorithms](Algorithms): A class library project. Contains the Algorithms implementations
+  2. [Data Structures](DataStructures): A class library project. Contains the Data Structures implementations
+  3. [UnitTest](UnitTest): Unit-testing project for the Algorithms and Data Structures
+
+#### Requirements:
+
+  1. .NET Core >= 2.0
+  2. XUnit
+
+#### A Note to Contributors:
+
+If you wish to contribute to C# ALGORITHMS, then please make sure you check out the [Contribution Guidelines](.github/CONTRIBUTING.md) first.
+
+##
+### DATA STRUCTURES
+
+#### Linear:
+
+  * [Skip List](DataStructures/Lists/SkipList.cs)
+  * [Array List](DataStructures/Lists/ArrayList.cs)
+  * [Stack](DataStructures/Lists/Stack.cs)
+  * [Queue](DataStructures/Lists/Queue.cs)
+  * [Single-Linked List](DataStructures/Lists/SLinkedList.cs)
+  * [Double-Linked List](DataStructures/Lists/DLinkedList.cs)
+
+#### Circular:
+  
+  * [Circular Buffer](DataStructures/Lists/CircularBuffer.cs)
 
 #### Heaps:
 
- * **[Binary Min-Heap](DataStructures/Heaps/BinaryMinHeap.cs).** Uses the *ArrayList\<T\>* class.
- * **[Binary Max-Heap](DataStructures/Heaps/BinaryMaxHeap.cs).** Uses the *ArrayList\<T\>* class.
- * **[Binomial Min-Heap](DataStructures/Heaps/BinomialMinHeap.cs).** Uses the *ArrayList\<T\>* class as a collection of connected BinomialNode lists. The BinomialNode is a private class inside the Heap data structure class.
+  * [Binary-Min Heap](DataStructures/Heaps/BinaryMinHeap.cs)
+  * [Binary-Max Heap](DataStructures/Heaps/BinaryMaxHeap.cs)
+  * [Binomial-Min Heap](DataStructures/Heaps/BinomialMinHeap.cs)
  
+#### Priority Queues:
+
+  * [Min-Priority Queue](DataStructures/Heaps/MinPriorityQueue.cs)
+  * [Key-value Priority Queue](DataStructures/Heaps/KeyedPriorityQueue.cs)
+ 
+#### Hashing Functions:
+
+  * [Prime Hashing Family](DataStructures/Hashing/PrimeHashingFamily.cs)
+  * [Universal Hashing Family](DataStructures/Hashing/UniversalHashingFamily.cs)
+
+#### Hash Tables:
+
+  * [Chained Hash Table](DataStructures/Dictionaries/ChainedHashTable.cs)
+  * [Cuckoo Hash Table](DataStructures/Dictionaries/CuckooHashTable.cs)
+  * [Open-Addressing Hash Table](DataStructures/Dictionaries/OpenAddressingHashTable.cs)
+
+#### Sorted Collections (Tree-based):
+
+  * [Sorted List](DataStructures/SortedCollections/SortedList.cs)
+  * [Sorted Dictionary](DataStructures/SortedCollections/SortedDictionary.cs)
+
 #### Trees:
 
- * **[Binary Search Tree](DataStructures/Trees/BinarySearchTree.cs).** Standard BST.
- * **[Augmented Binary Search Tree](DataStructures/Trees/AugmentedBinarySearchTree.cs).** A BST that is augmented to keep track of the subtrees-size for each node. Extends the *BinarySearchTree\<T\>* class.
- * **[AVL Tree](DataStructures/Trees/AVLTree.cs).** The self-balancing AVL binary-search tree. Extends the *BinarySearchTree\<T\>* class.
-
-#### Hashing Functions:
- * **[Prime Hashing Family](DataStructures/Hashing/PrimeHashingFamily.cs).** Implements a simple family of hash functions using primes. The functions are initialized by randomly selecting primes. Supports re-generation of functions.
- * **[Universal Hashing Family](DataStructures/Hashing/UniversalHashingFamily.cs).** Implements a family class of simple universal-hashing functions. Supports re-generation of functions. It uses the [Common/PrimesList](DataStructures/Common/PrimesList.cs) helper class.
-
-#### Hash Tables / Dictionaries:
-
- * **[Chained Hash Table](DataStructures/Dictionaries/ChainedHashTable.cs).** A hash table that implements the **Separate-Chaining** scheme for resolving keys-collisions. It also implements auto-resizing (expansion and contraction).
- * **[Cuckoo Hash Table](DataStructures/Dictionaries/CuckooHashTable.cs).** A hash table that implements the **Cuckoo Hashing** algorithm for resolving keys-collisions. This is a single-table implementation, the source behind this is the work of Mark Allen Weiss, 2014.
-
+  
+  * Basic Search Trees:
+    + [Binary Search Tree](DataStructures/Trees/BinarySearchTree.cs)
+      * [Map version](DataStructures/Trees/BinarySearchTreeMap.cs) _(supports key-value pairing; nodes indexed by keys)_
+    + [\(Augmented\) Binary Search Tree](DataStructures/Trees/AugmentedBinarySearchTree.cs)
+    + [Ternary Search Tree](DataStructures/Trees/TernarySearchTree.cs)  
+  * Self-Balancing Trees:
+    + [AVL Tree](DataStructures/Trees/AVLTree.cs)
+    + [B-Tree](DataStructures/Trees/BTree.cs)
+    + [Red-Black Tree](DataStructures/Trees/RedBlackTree.cs)
+      * [Map version](DataStructures/Trees/RedBlackTreeMap.cs) _(supports key-value pairing; nodes indexed by keys)_
+  * Prefix Trees:
+    + [Trie](DataStructures/Trees/Trie.cs)
+    + [Trie Map](DataStructures/Trees/TrieMap.cs) _(associative prefix tree; complete words are keys to records)_
+ 
 #### Graphs:
- * **Undirected Graphs:**
-  * **[Undirected Sparse Graph](DataStructures/Graphs/UndirectedSparseGraph.cs).** An adjacency-list graph representation. Implemented using a Dictionary. The nodes are inserted as keys, and the neighbors of every node are implemented as a doubly-linked list of nodes. This class implements the [IGraph\<T\>](DataStructures/Graphs/IGraph.cs) interface.
-  * **[Undirected Dense Graph](DataStructures/Graphs/UndirectedDenseGraph.cs).** An incidence-matrix graph representation. Implemented using a two dimensional boolean array. This class implements the [IGraph\<T\>](DataStructures/Graphs/IGraph.cs) interface.
- 
- * **Directed Graphs / Digraphs:** 
-  * **[Directed Sparse Graph](DataStructures/Graphs/DirectedSparseGraph.cs).** An adjacency-list digraph representation. Follows almost the same implementation details of the Undirected version, except for managing the directed edges. Implements the [IGraph\<T\>](DataStructures/Graphs/IGraph.cs) interface.
-  * **[Directed Dense Graph](DataStructures/Graphs/DirectedDenseGraph.cs).** An incidence-matrix digraph representation. Follows almost the same implementation details of the Undirected version, except for managing the directed edges. Implements the [IGraph\<T\>](DataStructures/Graphs/IGraph.cs) interface.
- 
- * **Directed Weighted Graphs / Weighted Digraphs:**
-  * **[Directed Weighted Sparse Graph](DataStructures/Graphs/DirectedWeightedSparseGraph.cs).** An adjacency-list weighted digraph representation. Shares a good deal of implemention details with the Directed Sparse version (DirectedSparseGraph\<T\>). Edges are instances of [WeightedEdge\<T\>](DataStructures/Graphs/WeightedEdge.cs) class. Implements both interfaces: [IGraph\<T\>](DataStructures/Graphs/IGraph.cs) and [IWeightedGraph\<T\>](DataStructures/Graphs/IWeightedGraph.cs).
-  * **[Directed Weighted Dense Graph](DataStructures/Graphs/DirectedWeightedDenseGraph.cs).** An adjacency-matrix weighted digraph representation. Inherits and extends Directed Dense verion (DirectedDenseGraph\<T\>). Implements the [IWeightedGraph\<T\>](DataStructures/Graphs/IWeightedGraph.cs) interface.
+
+  * Undirected Graphs:
+    + [Clique Graphs](DataStructures/Graphs/CliqueGraph.cs)
+    + [Undirected Sparse Graph](DataStructures/Graphs/UndirectedSparseGraph.cs)
+    + [Undirected Dense Graph](DataStructures/Graphs/UndirectedDenseGraph.cs)
+  * Undirected Weighted Graphs:
+    + [Undirected Weighted Sparse Graph](DataStructures/Graphs/UndirectedWeightedSparseGraph.cs)
+    + [Undirected Weighted Dense Graph](DataStructures/Graphs/UndirectedWeightedDenseGraph.cs)
+  * Directed Graphs:
+    + [Directed Sparse Graph](DataStructures/Graphs/DirectedSparseGraph.cs)
+    + [Directed Dense Graph](DataStructures/Graphs/DirectedDenseGraph.cs)
+  * Directed Weighted Graphs:
+    + [Directed Weighted Sparse Graph](DataStructures/Graphs/DirectedWeightedSparseGraph.cs)
+    + [Directed Weighted Dense Graph](DataStructures/Graphs/DirectedWeightedDenseGraph.cs)
 
 
-## Algorithms
+##
+### ALGORITHMS
 
 #### Sorting:
- Sorting algorithms are implemented as an extension method. They support the native Array\<T\>, and List\<T\> classes. They can takes value comparers. Insertion Sort supports my ArrayList\<T\> class.
 
-  * **[Insertion Sort](Algorithms/Sorting/InsertionSorter.cs).**
-  * **[Quick Sort](Algorithms/Sorting/QuickSorter.cs).**
-  * **[Merge Sort](Algorithms/Sorting/MergeSorter.cs).**
-  * **[Heap Sort](Algorithms/Sorting/HeapSorter.cs).**
-  * **[BST Sort](Algorithms/Sorting/BinarySearchTreeSorter.cs).** Implements an unbalanced binary search tree sort.
-  * **[Counting Sort](Algorithms/Sorting/CountingSorter.cs).** Only sorts arrays of integers.
+  * [Bubble Sort](Algorithms/Sorting/BubbleSorter.cs)
+  * [Bucket Sort](Algorithms/Sorting/BucketSorter.cs)
+  * [BST Sort](Algorithms/Sorting/BinarySearchTreeSorter.cs)
+  * [Comb Sort](Algorithms/Sorting/CombSorter.cs)
+  * [Counting Sort](Algorithms/Sorting/CountingSorter.cs)
+  * [Cycle Sort](Algorithms/Sorting/CycleSorter.cs)
+  * [Gnome Sort](Algorithms/Sorting/GnomeSorter.cs)
+  * [Heap Sort](Algorithms/Sorting/HeapSorter.cs)
+  * [Insertion Sort](Algorithms/Sorting/InsertionSorter.cs)
+  * [LSD Radix Sort](Algorithms/Sorting/LSDRadixSorter.cs)
+  * [Merge Sort](Algorithms/Sorting/MergeSorter.cs)
+  * [Selection Sort](Algorithms/Sorting/SelectionSorter.cs)
+  * [Shell Sort](Algorithms/Sorting/ShellSorter.cs)
+  * [OddEven Sort](Algorithms/Sorting/OddEvenSorter.cs)
+  * [PigeonHole Sort](Algorithms/Sorting/PigeonHoleSorter.cs)
+  * [Quick Sort](Algorithms/Sorting/QuickSorter.cs)
 
-    ```
-    int[] array = new int[] { 23, 42, 4, 16, 8, 15, 3, 9, 55, 0 };
-    List<long> list = new List<long> () { 23, 42, 4, 16, 8, 15, 3, 9, 55, 0 };
-    
-    // The value comparer object. Can be any value comparer that implmenets IComparer.
-    var valueComparer = Comparer<long>.Default;
-    
-    list.InsertionSort (valueComparer);
-    list.QuickSort (valueComparer);
-    list.MergeSort (valueComparer);
-    list.HeapSort (valueComparer);
-    list.UnbalancedBSTSort();
-    array.CountingSort();
-    ```
+#### Searching:
+
+  * [Binary Search](Algorithms/Search/BinarySearcher.cs)
 
 #### Graphs:
- * **[Depth-First Searcher](Algorithms/Graphs/DepthFirstSearcher.cs).** Implements the *Depth-First Search* algorithm in two ways: Iterative and Recursive. Provides multiple functions for traversing graphs: PrintAll(), VisitAll(Action\<T\> forEachFunc), FindFirstMatch(Predicate\<T\> match). The VisitAll() applies a function to every graph node. The FindFirstMatch() function searches the graph for a predicate match.
- * **[Breadth-First Searcher](Algorithms/Graphs/BreadthFirstSearcher.cs).** Implements the the *Breadth-First Search* algorithm. Provides multiple functions for traversing graphs: PrintAll(), VisitAll(Action\<T\> forEachFunc), FindFirstMatch(Predicate\<T\> match). The VisitAll() applies a function to every graph node. The FindFirstMatch() function searches the graph for a predicate match.
- * **[Breadth-First Shortest Paths](Algorithms/Graphs/BreadthFirstShortestPaths.cs).** Calculates Shortest-Paths for Unweighted Graphs using the *Breadth-First Search* algorithm. It provides the capability to find shortest-paths from a single-source and multiple-sources, in addition to looking up reachable and unreachable nodes.
- * **[Dijkstra's Shortest Paths](Algorithms/Graphs/DijkstraShortestPaths.cs).** Calculates Dijkstra's Shortest-Paths for Directed Weighted Graphs from a single-source to all destinations. This class provides the same API as the *BreadthFirstShortestPaths\<T\>*.
- * **[Dijksta's All-Pairs Shortest Paths](Algorithms/Graphs/DijkstraAllPairsShortestPaths.cs).** Calculates Dijktra's shortest paths for all pairs of vertices in a graph. This is a wrapper class that applies single-source dijkstra shortest paths (DijkstraShortestPaths\<TG, TV\>) to all vertices of a graph and saves the results in a dictionary index by the vertices.
- * **[Cycles Detector](Algorithms/Graphs/CyclesDetector.cs).** Detects if a given graph is cyclic. Supports directed and undirected graphs.
- * **[Topological Sorter](Algorithms/Graphs/TopologicalSorter.cs).** Calculates one topological sorting of a *DAG* (Directed Acyclic Graph). This class depends on the *CyclesDetector* static class.
 
+  * Graph Search:
+    + [Depth-First Searcher](Algorithms/Graphs/DepthFirstSearcher.cs)
+    + [Breadth-First Searcher](Algorithms/Graphs/BreadthFirstSearcher.cs)
+  * Shortest Paths:
+    + [Breadth-First SPs](Algorithms/Graphs/BreadthFirstShortestPaths.cs)
+    + [Bellman-Ford SPs](Algorithms/Graphs/BellmanFordShortestPaths.cs)
+    + [Dijkstra SPs](Algorithms/Graphs/DijkstraShortestPaths.cs)
+    + [Dijkstra All-Pairs SPs](Algorithms/Graphs/DijkstraAllPairsShortestPaths.cs)
+  * DFS Applications:
+    + [Cycles Detector](Algorithms/Graphs/CyclesDetector.cs)
+    + [Topological Sorter](Algorithms/Graphs/TopologicalSorter.cs)
+  * BFS Applications:
+    + [Connected Components](Algorithms/Graphs/ConnectedComponents.cs)
+    + [Bipartite Graphs Coloring](Algorithms/Graphs/BipartiteColoring.cs)
+
+#### Trees:
+
+  * [Recursive Binary Tree Walker](Algorithms/Trees/BinaryTreeRecursiveWalker.cs)
+    + Methods: PrintAll, ForEach, Contains and BinarySearch. Traversal Modes: Preorder, Inorder & Postorder
+
+#### Strings:
+
+  * [Permutations and Anagrams](Algorithms/Strings/Permutations.cs)
+  * [Edit Distance](Algorithms/Strings/EditDistance.cs)
+    + Uses a generic custom class for passing costs: [EditDistanceCostsMap\<T\>](Algorithms/Strings/EditDistanceCostsMap.cs)
 
 #### Numeric:
- * **[Catalan Numbers](Algorithms/Numeric/CatalanNumbers.cs).** A class that calculates the catalan numbers. A dynamic-programming solution.
+
+  * [Binomial Coefficients](Algorithms/Numeric/BinomialCoefficients.cs)
+  * [Catalan Numbers](Algorithms/Numeric/CatalanNumbers.cs)
+  * [Greatest Common Divisor](Algorithms/Numeric/GreatestCommonDivisor.cs)
 
 #### Visualization:
- * **[Tree Drawer](DataStructures/Trees/TreeDrawer.cs).** Draws any tree that extends my *BinarySearchTree\<T\>* class. It is defined as an extension method.
-    ```
-    var avlTree = new AVLTree<int>();
-    var treeDataList = new List<int>() { 15, 25, 5, 12, 1, 9, 7, -1, 11, 30, 8, 10, 13, 28, 39 };
-    avlTree.Insert(treeDataList);
-    
-    Console.WriteLine( avlTree.DrawTree() );
-    
-    /***
-     ** Drawer output:
-     **           .......9......
-     **          /              \
-     **       .5       ....12...
-     **      /  \     /         \
-     **    1   7    11      .25.
-     **    /\ / \   /\     /    \
-     **  -1     8  10    15    30
-     **  /\    /\  /\    /\   / \
-     **                 13   28 39
-     **                 /\   /\ /\
-     */
-    ```
+
+  * [Tree Drawer](DataStructures/Trees/TreeDrawer.cs)
 
 
-## License
+##
+### CONTRIBUTORS
+
+<a href="https://github.com/aalhour/C-Sharp-Algorithms/graphs/contributors">
+  <img src="https://contributors-img.firebaseapp.com/image?repo=aalhour/C-Sharp-Algorithms" />
+</a>
+
+<br />
+<!-- Made with [contributors-img](https://contributors-img.firebaseapp.com). -->
+
+##
+### LICENSE
 
 This project is licensed under the [MIT License](LICENSE).

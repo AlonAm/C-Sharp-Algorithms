@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-
-using DataStructures.Common;
 
 namespace DataStructures.Trees
 {
@@ -65,17 +62,43 @@ namespace DataStructures.Trees
     public class AugmentedBinarySearchTree<T> : BinarySearchTree<T> where T : IComparable<T>
     {
         /// <summary>
-        /// TREE INSTANCE VARIABLES
+        /// Override the Root node accessors.
         /// </summary>
-
-        // Casted-root getter and setter
         public new BSTRankedNode<T> Root
         {
             get { return (BSTRankedNode<T>)base.Root; }
             set { base.Root = value; }
         }
 
+
+        /// <summary>
+        /// CONSTRUCTOR.
+        /// Allows duplicates by default.
+        /// </summary>
         public AugmentedBinarySearchTree() : base() { }
+
+        /// <summary>
+        /// CONSTRUCTOR.
+        /// If allowDuplictes is set to false, no duplicate items will be inserted.
+        /// </summary>
+        public AugmentedBinarySearchTree(bool allowDuplicates) : base(allowDuplicates) { }
+
+
+        /// <summary>
+        /// Returns the height of the tree.
+        /// </summary>
+        /// <returns>Hight</returns>
+        public override int Height
+        {
+            get
+            {
+                if (IsEmpty)
+                    return 0;
+
+                var currentNode = this.Root;
+                return this._getTreeHeight(currentNode);
+            }
+        }
 
         /// <summary>
         /// Returns the Subtrees size for a tree node if node exists; otherwise 0 (left and right nodes of leafs).
@@ -87,8 +110,7 @@ namespace DataStructures.Trees
         {
             if (node == null)
                 return 0;
-            else
-                return node.SubtreeSize;
+            return node.SubtreeSize;
         }
 
         /// <summary>
@@ -120,11 +142,12 @@ namespace DataStructures.Trees
 
             if (node.ChildrenCount == 2) // if both children are present
             {
-                var successor = node.RightChild;
+                var successor = _findNextLarger(node);
                 node.Value = successor.Value;
                 return (true && _remove(successor));
             }
-            else if (node.HasLeftChild) // if the node has only a LEFT child
+
+            if (node.HasLeftChild) // if the node has only a LEFT child
             {
                 base._replaceNodeInParent(node, node.LeftChild);
                 _updateSubtreeSize(parent);
@@ -161,33 +184,21 @@ namespace DataStructures.Trees
             {
                 if (node.LeftChild.SubtreeSize > node.RightChild.SubtreeSize)
                     return (1 + _getTreeHeight(node.LeftChild));
-                else
-                    return (1 + _getTreeHeight(node.RightChild));
+                return (1 + _getTreeHeight(node.RightChild));
             }
-            else if (node.HasLeftChild)
+
+            if (node.HasLeftChild)
             {
                 return (1 + _getTreeHeight(node.LeftChild));
             }
-            else if (node.HasRightChild)
+
+            if (node.HasRightChild)
             {
                 return (1 + _getTreeHeight(node.RightChild));
             }
 
             // return-functions-fix
             return 0;
-        }
-
-        /// <summary>
-        /// Returns the height of the tree.
-        /// </summary>
-        /// <returns>Hight</returns>
-        public override int Height()
-        {
-            if (IsEmpty())
-                return 0;
-
-            var currentNode = this.Root;
-            return this._getTreeHeight(currentNode);
         }
 
         /// <summary>
@@ -198,9 +209,13 @@ namespace DataStructures.Trees
         {
             var newNode = new BSTRankedNode<T>(item);
 
-            // Insert node recursively starting from the root.
-            // Handles increasing the Count of elements
-            base._insertNode(newNode);
+            // Invoke the super BST insert node method.
+            // This insert node recursively starting from the root and checks for success status (related to allowDuplicates flag).
+            // The functions increments count on its own.
+            var success = base._insertNode(newNode);
+
+            if (success == false && _allowDuplicates == false)
+                throw new InvalidOperationException("Tree does not allow inserting duplicate elements.");
 
             // Update the subtree-size for the newNode's parent.
             _updateSubtreeSize(newNode.Parent);
@@ -215,12 +230,8 @@ namespace DataStructures.Trees
                 throw new ArgumentNullException();
 
             if (collection.Length > 0)
-            {
                 for (int i = 0; i < collection.Length; ++i)
-                {
                     this.Insert(collection[i]);
-                }
-            }
         }
 
         /// <summary>
@@ -232,12 +243,8 @@ namespace DataStructures.Trees
                 throw new ArgumentNullException();
 
             if (collection.Count > 0)
-            {
                 for (int i = 0; i < collection.Count; ++i)
-                {
                     this.Insert(collection[i]);
-                }
-            }
         }
 
         /// <summary>
@@ -246,7 +253,7 @@ namespace DataStructures.Trees
         /// <param name="item">item to remove.</param>
         public override void Remove(T item)
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             var node = (BSTRankedNode<T>)base._findNode(this.Root, item);
@@ -263,7 +270,7 @@ namespace DataStructures.Trees
         /// </summary>
         public override void RemoveMin()
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             var node = (BSTRankedNode<T>)_findMinNode(this.Root);
@@ -279,7 +286,7 @@ namespace DataStructures.Trees
         /// </summary>
         public override void RemoveMax()
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             var node = (BSTRankedNode<T>)_findMaxNode(this.Root);
@@ -301,8 +308,7 @@ namespace DataStructures.Trees
 
             if (node == null)
                 throw new Exception("Item was not found.");
-            else
-                return (this._subtreeSize(node.LeftChild) + 1);
+            return (this._subtreeSize(node.LeftChild) + 1);
         }
 
     }

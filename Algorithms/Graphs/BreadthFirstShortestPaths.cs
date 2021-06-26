@@ -1,10 +1,14 @@
-﻿using System;
+﻿/***
+ * Computes Shortest-Paths for Unweighted Graphs using the Breadth-First Search algorithm.
+ * It provides the capability to find shortest-paths from a single-source and multiple-sources, in addition to looking up reachable and unreachable nodes.
+ */
+
+using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 
 using Algorithms.Common;
 using DataStructures.Graphs;
-using DataStructures.Lists;
 
 namespace Algorithms.Graphs
 {
@@ -34,7 +38,7 @@ namespace Algorithms.Graphs
         {
             if (Graph == null)
                 throw new ArgumentNullException();
-            else if (!Graph.HasVertex(Source))
+            if (!Graph.HasVertex(Source))
                 throw new ArgumentException("The source vertex doesn't belong to graph.");
 
             // Init
@@ -56,7 +60,7 @@ namespace Algorithms.Graphs
         {
             if (Graph == null)
                 throw new ArgumentNullException();
-            else if (Sources == null || Sources.Count == 0)
+            if (Sources == null || Sources.Count == 0)
                 throw new ArgumentException("Sources list is either null or empty.");
 
             // Init
@@ -108,21 +112,18 @@ namespace Algorithms.Graphs
         /// </summary>
         private void _breadthFirstSearch(IGraph<T> graph, T source)
         {
-            // Define helper variables.
-            var current = source;
-            var queue = new DataStructures.Lists.Queue<T>(_verticesCount);
-
             // Set distance to current to zero
-            _distances[_nodesToIndices[current]] = 0;
+            _distances[_nodesToIndices[source]] = 0;
 
             // Set current to visited: true.
-            _visited[_nodesToIndices[current]] = true;
+            _visited[_nodesToIndices[source]] = true;
 
-            queue.Enqueue(current);
+            var queue = new Queue<T>(_verticesCount);
+            queue.Enqueue(source);
 
-            while (!queue.IsEmpty)
+            while (queue.Count > 0)
             {
-                current = queue.Dequeue();
+                var current = queue.Dequeue();
                 int indexOfCurrent = _nodesToIndices[current];
 
                 foreach (var adjacent in graph.Neighbours(current))
@@ -147,7 +148,7 @@ namespace Algorithms.Graphs
         private void _breadthFirstSearch(IGraph<T> graph, IList<T> sources)
         {
             // Define helper variables.
-            var queue = new DataStructures.Lists.Queue<T>(_verticesCount);
+            var queue = new Queue<T>(_verticesCount);
 
             foreach (var source in sources)
             {
@@ -160,7 +161,7 @@ namespace Algorithms.Graphs
                 queue.Enqueue(source);
             }
 
-            while (!queue.IsEmpty)
+            while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
                 int indexOfCurrent = _nodesToIndices[current];
@@ -280,7 +281,7 @@ namespace Algorithms.Graphs
         {
             if (!_nodesToIndices.ContainsKey(destination))
                 throw new Exception("Graph doesn't have the specified vertex.");
-            else if (!HasPathTo(destination))
+            if (!HasPathTo(destination))
                 return null;
 
             int dstIndex = _nodesToIndices[destination];

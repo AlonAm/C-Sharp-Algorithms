@@ -1,22 +1,23 @@
-﻿using System;
-using System.Diagnostics;
-using System.Collections.Generic;
+﻿/***
+ * The Directed Sparse Graph Data Structure.
+ * 
+ * Definition:
+ * A sparse graph is a graph G = (V, E) in which |E| = O(|V|).
+ * A directed graph is a graph where each edge follow one direction only between any two vertices.
+ * A weighted graph is a graph where each edge has a weight (zero weights mean there is no edge).
+ * 
+ * An adjacency-list weighted digraph representation. Shares a good deal of implemention details 
+ * with the Directed Sparse version (DirectedSparseGraph<T>). Edges are instances of WeightedEdge<T> class. 
+ * Implements both interfaces: IGraph<T> and IWeightedGraph<T>.
+ */
 
+using System;
+using System.Collections.Generic;
 using DataStructures.Common;
 using DataStructures.Lists;
 
 namespace DataStructures.Graphs
 {
-    /// <summary>
-    /// The Directed Sparse Graph Data Structure.
-    /// 
-    /// Definition:
-    /// A sparse graph is a graph G = (V, E) in which |E| = O(|V|).
-    /// A directed graph is a graph where each edge follow one direction only between any two vertices.
-    /// A weighted graph is a graph where each edge has a weight (zero weights mean there is no edge).
-    /// 
-    /// This class represents the digraph as an adjacency-list (dictionary).
-    /// </summary>
     public class DirectedWeightedSparseGraph<T> : IGraph<T>, IWeightedGraph<T> where T : IComparable<T>
     {
         /// <summary>
@@ -47,16 +48,15 @@ namespace DataStructures.Graphs
         {
             WeightedEdge<T> edge = null;
 
-            try
-            {
-                edge = _adjacencyList[source].FindFirst(item => item.Source.IsEqualTo<T>(source) && item.Destination.IsEqualTo<T>(destination));
-            }
-            catch (Exception)
-            {
-                return null;
-            }
+            // Predicate
+            var sourceToDestinationPredicate = new Predicate<WeightedEdge<T>>((item) => item.Source.IsEqualTo<T>(source) && item.Destination.IsEqualTo<T>(destination));
 
-            // Could return a null object.
+            // Try to find a match
+            if(_adjacencyList.ContainsKey(source))
+                _adjacencyList[source].TryFindFirst(sourceToDestinationPredicate, out edge);
+            
+            // Return!
+            // Might return a null object.
             return edge;
         }
 
@@ -122,10 +122,27 @@ namespace DataStructures.Graphs
             }
         }
 
+
+        IEnumerable<IEdge<T>> IGraph<T>.Edges
+        {
+            get { return this.Edges; }
+        }
+
+        IEnumerable<IEdge<T>> IGraph<T>.IncomingEdges(T vertex)
+        {
+            return this.IncomingEdges(vertex);
+        }
+
+        IEnumerable<IEdge<T>> IGraph<T>.OutgoingEdges(T vertex)
+        {
+            return this.OutgoingEdges(vertex);
+        }
+
+
         /// <summary>
-        /// An enumerable collection of edges.
+        /// An enumerable collection of all directed weighted edges in graph.
         /// </summary>
-        public IEnumerable<WeightedEdge<T>> Edges
+        public virtual IEnumerable<WeightedEdge<T>> Edges
         {
             get
             {
@@ -134,6 +151,38 @@ namespace DataStructures.Graphs
                         yield return edge;
             }
         }
+
+        /// <summary>
+        /// Get all incoming directed weighted edges to a vertex.
+        /// </summary>
+        public virtual IEnumerable<WeightedEdge<T>> IncomingEdges(T vertex)
+        {
+            if (!HasVertex(vertex))
+                throw new KeyNotFoundException("Vertex doesn't belong to graph.");
+
+            var predicate = new Predicate<WeightedEdge<T>>((edge) => edge.Destination.IsEqualTo(vertex));
+
+            foreach(var adjacent in _adjacencyList.Keys)
+            {
+                WeightedEdge<T> incomingEdge = null;
+
+                if (_adjacencyList[adjacent].TryFindFirst(predicate, out incomingEdge))
+                    yield return incomingEdge;
+            }//end-foreach
+        }
+
+        /// <summary>
+        /// Get all outgoing directed weighted edges from a vertex.
+        /// </summary>
+        public virtual IEnumerable<WeightedEdge<T>> OutgoingEdges(T vertex)
+        {
+            if (!HasVertex(vertex))
+                throw new KeyNotFoundException("Vertex doesn't belong to graph.");
+            
+            foreach(var edge in _adjacencyList[vertex])
+                yield return edge;
+        }
+
 
         /// <summary>
         /// Obsolete. Another AddEdge function is implemented with a weight parameter.
@@ -152,9 +201,9 @@ namespace DataStructures.Graphs
             // Check existence of nodes, the validity of the weight value, and the non-existence of edge
             if (weight == EMPTY_EDGE_VALUE)
                 return false;
-            else if (!HasVertex(source) || !HasVertex(destination))
+            if (!HasVertex(source) || !HasVertex(destination))
                 return false;
-            else if (_doesEdgeExist(source, destination))
+            if (_doesEdgeExist(source, destination))
                 return false;
 
             // Add edge from source to destination
@@ -197,24 +246,19 @@ namespace DataStructures.Graphs
             // Check existence of vertices and validity of the weight value
             if (weight == EMPTY_EDGE_VALUE)
                 return false;
-            else if (!HasVertex(source) || !HasVertex(destination))
+            if (!HasVertex(source) || !HasVertex(destination))
                 return false;
 
-            // Try get edge
-            var edge = _tryGetEdge(source, destination);
+            foreach (var edge in _adjacencyList[source])
+            {
+                if (edge.Destination.IsEqualTo(destination))
+                {
+                    edge.Weight = weight;
+                    return true;
+                }
+            }
 
-            // Check existence of edge
-            if (edge == null)
-                return false;
-
-            // Remove the old edge
-            _adjacencyList[source].Remove(edge);
-
-            // Add the new weighted edge
-            edge.Weight = weight;
-            _adjacencyList[source].Append(edge);
-
-            return true;
+            return false;
         }
 
         /// <summary>
@@ -354,17 +398,6 @@ namespace DataStructures.Graphs
         }
 
         /// <summary>
-        /// Get all outgoing weighted edges from vertex
-        /// </summary>
-        public virtual IEnumerable<WeightedEdge<T>> OutgoingEdges(T vertex)
-        {
-            if (!HasVertex(vertex))
-                return null;
-
-            return _adjacencyList[vertex];
-        }
-
-        /// <summary>
         /// Returns the degree of the specified vertex.
         /// </summary>
         public virtual int Degree(T vertex)
@@ -392,7 +425,7 @@ namespace DataStructures.Graphs
                     adjacents = String.Format("{0}{1}({2}), ", adjacents, adjacentNode.Destination, adjacentNode.Weight);
 
                 if (adjacents.Length > 0)
-                    adjacents = adjacents.TrimEnd(new char[] { ',', ' '});
+                    adjacents = adjacents.TrimEnd(new char[] { ',', ' ' });
 
                 output = String.Format("{0}{1}]", output, adjacents);
             }
@@ -418,7 +451,7 @@ namespace DataStructures.Graphs
             // Check for existence of source
             if (VerticesCount == 0)
                 return new ArrayList<T>(0);
-            else if (!HasVertex(source))
+            if (!HasVertex(source))
                 throw new KeyNotFoundException("The source vertex doesn't exist.");
 
             var visited = new HashSet<T>();
@@ -463,7 +496,7 @@ namespace DataStructures.Graphs
             // Check for existence of source
             if (VerticesCount == 0)
                 return new ArrayList<T>(0);
-            else if (!HasVertex(source))
+            if (!HasVertex(source))
                 throw new KeyNotFoundException("The source vertex doesn't exist.");
 
             var visited = new HashSet<T>();

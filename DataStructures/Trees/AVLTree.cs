@@ -1,74 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using DataStructures;
-
 namespace DataStructures.Trees
 {
     /// <summary>
-    /// AVL Tree Node.
-    /// </summary>
-
-    public class AVLTreeNode<T> : BSTNode<T> where T : IComparable<T>
-    {
-        private int _height = 0;
-
-        public AVLTreeNode() : this(default(T), 0, null, null, null) { }
-        public AVLTreeNode(T value) : this(value, 0, null, null, null) { }
-        public AVLTreeNode(T value, int height, AVLTreeNode<T> parent, AVLTreeNode<T> left, AVLTreeNode<T> right)
-        {
-            base.Value = value;
-            Height = height;
-            Parent = parent;
-            LeftChild = left;
-            RightChild = right;
-        }
-
-        public virtual int Height
-        {
-            get { return this._height; }
-            set { this._height = value; }
-        }
-
-        public new AVLTreeNode<T> Parent
-        {
-            get { return (AVLTreeNode<T>)base.Parent; }
-            set { base.Parent = value; }
-        }
-
-        public new AVLTreeNode<T> LeftChild
-        {
-            get { return (AVLTreeNode<T>)base.LeftChild; }
-            set { base.LeftChild = value; }
-        }
-
-        public new AVLTreeNode<T> RightChild
-        {
-            get { return (AVLTreeNode<T>)base.RightChild; }
-            set { base.RightChild = value; }
-        }
-    }
-
-
-    /*********************************************************************/
-
-
-    /// <summary>
     /// AVL Tree Data Structure.
     /// </summary>
-
     public class AVLTree<T> : BinarySearchTree<T> where T : IComparable<T>
     {
+        /// <summary>
+        /// Override the Root node accessors
+        /// </summary>
         public new AVLTreeNode<T> Root
         {
             get { return (AVLTreeNode<T>)base.Root; }
-            set { base.Root = value; }
+            internal set { base.Root = value; }
         }
 
-        public AVLTree()
-            : base()
-        {
-        }
+        /// <summary>
+        /// CONSTRUCTOR.
+        /// Allows duplicates by default.
+        /// </summary>
+        public AVLTree() : base() { }
+
+        /// <summary>
+        /// CONSTRUCTOR.
+        /// If allowDuplictes is set to false, no duplicate items will be inserted.
+        /// </summary>
+        public AVLTree(bool allowDuplicates) : base(allowDuplicates) { }
+
 
         /// <summary>
         /// Returns the height of a node.
@@ -77,8 +37,7 @@ namespace DataStructures.Trees
         {
             if (node == null)
                 return -1;
-            else
-                return node.Height;
+            return node.Height;
         }
 
         /// <summary>
@@ -320,8 +279,13 @@ namespace DataStructures.Trees
             // New node object
             var newNode = new AVLTreeNode<T>() { Value = item };
 
-            // Invoke the BST insert node method.
-            base._insertNode(newNode);
+            // Invoke the super BST insert node method.
+            // This insert node recursively starting from the root and checks for success status (related to allowDuplicates flag).
+            // The functions increments count on its own.
+            var success = base._insertNode(newNode);
+
+            if (success == false && _allowDuplicates == false)
+                throw new InvalidOperationException("Tree does not allow inserting duplicate elements.");
 
             // Rebalance the tree
             _rebalanceTreeAt(newNode);
@@ -336,12 +300,8 @@ namespace DataStructures.Trees
                 throw new ArgumentNullException();
 
             if (collection.Length > 0)
-            {
                 for (int i = 0; i < collection.Length; ++i)
-                {
                     this.Insert(collection[i]);
-                }
-            }
         }
 
         /// <summary>
@@ -353,12 +313,8 @@ namespace DataStructures.Trees
                 throw new ArgumentNullException();
 
             if (collection.Count > 0)
-            {
                 for (int i = 0; i < collection.Count; ++i)
-                {
                     this.Insert(collection[i]);
-                }
-            }
         }
 
         /// <summary>
@@ -366,7 +322,7 @@ namespace DataStructures.Trees
         /// </summary>
         public override void Remove(T item)
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             // Get the node from the tree
@@ -403,7 +359,7 @@ namespace DataStructures.Trees
         /// </summary>
         public override void RemoveMin()
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             // Get the node from the tree
@@ -423,7 +379,7 @@ namespace DataStructures.Trees
         /// </summary>
         public override void RemoveMax()
         {
-            if (IsEmpty())
+            if (IsEmpty)
                 throw new Exception("Tree is empty.");
 
             // Get the node from the tree

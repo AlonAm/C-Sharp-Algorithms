@@ -1,4 +1,15 @@
-﻿using System;
+﻿/***
+ * Implements the the Breadth-First Search algorithm. 
+ * 
+ * Provides multiple functions for traversing graphs: 
+ *  1. PrintAll(), 
+ *  2. VisitAll(Action<T> forEachFunc), 
+ *  3. FindFirstMatch(Predicate<T> match). 
+ *  
+ * The VisitAll() applies a function to every graph node. The FindFirstMatch() function searches the graph for a predicate match.
+ */
+
+using System;
 using System.Collections.Generic;
 
 using DataStructures.Graphs;
@@ -24,25 +35,20 @@ namespace Algorithms.Graphs
             var visited = new HashSet<T>();
             var queue = new Queue<T>(Graph.VerticesCount);
 
-            // BFS VISIT NODE STEP
-            var current = StartVertex;
-            Console.Write(String.Format("({0}) ", current));
-            visited.Add(current);
+            queue.Enqueue (StartVertex);
 
             while (queue.Count > 0)
             {
-                current = queue.Dequeue();
+                var current = queue.Dequeue();
+                Console.Write(String.Format("({0}) ", current));
 
                 foreach (var adjacent in Graph.Neighbours(current))
                 {
-                    if (visited.Contains(adjacent))
-                        continue;
-
-                    // BFS VISIT NODE STEP
-                    Console.Write(String.Format("({0}) ", adjacent));
-                    visited.Add(adjacent);
-
-                    queue.Enqueue(adjacent);
+                    if (!visited.Contains(adjacent))
+                    {
+                        visited.Add(adjacent);
+                        queue.Enqueue(adjacent);
+                    }
                 }
             }
         }
